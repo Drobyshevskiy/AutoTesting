@@ -4,9 +4,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class IndexPage {
     WebDriver driver;
+    private WebDriverWait wait;
 
     @FindBy(xpath = "//input[@placeholder='Откуда']")
     private WebElement departureCity;
@@ -23,8 +26,12 @@ public class IndexPage {
     @FindBy(id = "race-online")
     private WebElement submitButton;
 
+    @FindBy(xpath = "//div[@id='lpc-error']/p")
+    private WebElement errorconfirmation;
+
     public IndexPage(WebDriver driver) {
         this.driver = driver;
+        wait = new WebDriverWait(driver, 10);
         driver.get("https://www.rossiya-airlines.com");
         PageFactory.initElements(driver, this);
     }
@@ -48,5 +55,13 @@ public class IndexPage {
 
     public void submitForm() {
         submitButton.click();
+    }
+
+    public String confirmationError(){
+        return checkVisibility(errorconfirmation).getText();
+
+    }
+    private WebElement checkVisibility(WebElement element) {
+        return wait.until(ExpectedConditions.visibilityOf(element));
     }
 }
